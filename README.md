@@ -1,0 +1,42 @@
+# snowresources
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### TODO
+User:
+* Login
+* Buscador
+* Agregar telefono a perfil
+* Seleccionar dias de reserva
+* Seleccionar horarios de reserva
+* Cancelar reserva parcial/total
+* Pagar
+* Calificar
+* Ver reservas anteriores
+
