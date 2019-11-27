@@ -37,7 +37,6 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import Api from '../api';
 
 export default {
   data() {
@@ -66,7 +65,7 @@ export default {
           password: this.password,
         });
         this.success = true;
-        this.$router.push({ name: 'newTransaction' });
+        this.$router.push({ name: 'NewTransaction' });
       } catch (e) {
         this.error = true;
       }
@@ -76,7 +75,7 @@ export default {
   watch: {
     userId(v) {
       if (v) {
-        this.$router.push({ name: 'newTransaction' });
+        this.$router.push({ name: 'NewTransaction' });
       }
     },
   },
