@@ -17,11 +17,15 @@ function addTransaction(transaction) {
 }
 
 function create(data) {
-  if (!data || !data.password || !data.email) {
+  if (!data) {
     throw new Error('INVALID_USER');
   }
-  this.password = encryptPassword(data.password);
-  this.email = data.email;
+  const { password, email } = data;
+  if (!password || !email || password.length > 10 || !/.+@.+\..+/.test(email)) {
+    throw new Error('INVALID_USER');
+  }
+  this.password = encryptPassword(password);
+  this.email = email;
   this.id = Math.random().toString(36).substr(2, 9);
   this.addTransaction({
     destinationAccount: '1234556',
