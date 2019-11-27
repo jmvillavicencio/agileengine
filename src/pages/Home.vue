@@ -60,7 +60,7 @@ export default {
       this.success = false;
       this.loading = true;
       try {
-        this.userLogin({
+        await this.userLogin({
           email: this.email,
           password: this.password,
         });
