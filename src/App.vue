@@ -4,9 +4,11 @@
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       app
     >
-      <v-toolbar-title class="headline text-uppercase">
-        <span>TRANSACTION</span>
-        <span class="font-weight-light">APP</span>
+      <v-toolbar-title class="headline text-uppercase brand">
+        <router-link :to="{ name: 'Home' }" class="blue-grey--text text--darken-4">
+          <span>TRANSACTION</span>
+          <span class="font-weight-light">APP</span>
+        </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
