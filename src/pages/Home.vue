@@ -4,10 +4,9 @@
       <v-row class="justify-center">
         <custom-card width="400">
           <v-form
-            v-model="validLogin"
-            @submit.prevent="submitLogin"
-            lazy-validation
             ref="form"
+            lazy-validation
+            @keyup.enter.native="submitLogin"
           >
             <h3 class="mb-6">
               {{ __('Fake Login') }} <span class="caption">Almost any email or psw should work ;)</span>
@@ -26,8 +25,8 @@
               text
               type="error"
             >
-            {{ this.error || 'Oops! Something went wrong. Please, try again later' }}.
-          </v-alert>
+              {{ error || 'Oops! Something went wrong. Please, try again later' }}.
+            </v-alert>
             <v-text-field
               v-model="email"
               :label="__('E-mail')"
@@ -37,20 +36,20 @@
             ></v-text-field>
             <v-text-field
               v-model="password"
+              name="password"
+              outlined
               :rules="passwordRules"
               :type="showPassword ? 'text' : 'password'"
               :label="__('Password')"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
-              name="password"
-              outlined
             ></v-text-field>
             <v-btn
               :loading="loading"
               color="primary"
               block
               rounded
-              type="submit"
+              @click="submitLogin"
             >
               {{ __('Login') }}
             </v-btn>
@@ -69,18 +68,17 @@ export default {
       showPassword: false,
       password: null,
       passwordRules: [
-        v => !!v || 'Password is required',
-        v => (v && v.length <= 10) || 'Password must be less than 10 characters',
+        (v) => !!v || 'Password is required',
+        (v) => (v && v.length <= 10) || 'Password must be less than 10 characters',
       ],
       email: null,
       emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        (v) => !!v || 'E-mail is required',
+        (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       loading: false,
       success: false,
       error: false,
-      validLogin: true,
     };
   },
   computed: {
