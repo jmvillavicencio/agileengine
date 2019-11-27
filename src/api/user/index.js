@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API = process.env.VUE_APP_API_URL;
 
-async function login(credentials) {
+async function authenticate(credentials) {
   const { data } = await axios({
     url: `${API}/auth`,
     method: 'POST',
@@ -34,6 +34,6 @@ async function sendTransaction(userId, transaction) {
 
 export default {
   getById,
-  login,
+  authenticate,
   sendTransaction,
 };
