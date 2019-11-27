@@ -10,7 +10,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/transaction/new',
-    name: 'newTransaction',
+    name: 'NewTransaction',
     component: NewTransaction,
     meta: {
       requiresAuth: true,
@@ -20,6 +20,9 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+    meta: {
+      requiresUnAuth: true,
+    },
   },
 ];
 
@@ -35,15 +38,19 @@ const router = new VueRouter({
   },
 });
 
+function isSessionInStore() {
+  return localStorage.getItem('userId') != null;
+}
+
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (localStorage.getItem('userId') == null) {
-      next({
-        name: 'Home',
-      });
-    } else {
-      next();
-    }
+  if (to.matched.some((record) => record.meta.requiresAuth) && !isSessionInStore()) {
+    next({
+      name: 'Home',
+    });
+  } else if (to.matched.some((record) => record.meta.requiresUnAuth) && isSessionInStore()) {
+    next({
+      name: 'NewTransaction',
+    });
   } else {
     next();
   }
