@@ -10,6 +10,7 @@ const initialState = {
     balance: 0,
     email: null,
     id: null,
+    transactions: [],
   },
 };
 
@@ -22,24 +23,36 @@ const actions = {
     }
   },
   async login({ commit }, payload) {
-    const { user } = await Api.user.login(payload);
+    const { user } = await Api.user.authenticate(payload);
     localStorage.setItem('userId', user.id);
     commit('setUser', user);
   },
   async sendTransaction({ commit, getters }, payload) {
     const { balance } = await Api.user.sendTransaction(getters.userId, payload);
+    commit('addTransaction', payload);
     commit('setBalance', balance);
   },
 };
 
 const mutations = {
   setUser(state, payload) {
-    Vue.set(state, 'user', payload);
+    Vue.set(state, 'user', {
+      balance: payload.currentBalance,
+      email: payload.email,
+      id: payload.id,
+      transactions: payload.transactions,
+    });
   },
   setBalance(state, payload) {
     Vue.set(state, 'user', {
       ...state.user,
       balance: payload,
+    });
+  },
+  addTransaction(state, payload) {
+    Vue.set(state, 'user', {
+      ...state.user,
+      transactions: [...state.user.transactions, payload],
     });
   },
 };
@@ -48,6 +61,7 @@ const getters = {
   userEmail: ({ user }) => user.email,
   userId: ({ user }) => user.id,
   userBalance: ({ user }) => user.balance,
+  userTransactions: ({ user }) => user.transactions,
 };
 export default {
   namespaced: true,
