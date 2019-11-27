@@ -3,7 +3,7 @@ function encryptPassword() {
 }
 
 function addTransaction(transaction) {
-  if (!transaction || !transaction.amount) {
+  if (!transaction || !transaction.amount || !transaction.destinationAccount) {
     throw new Error('INVALID_TRANSACTION');
   }
   const copyOfTransaction = { ...transaction };
@@ -14,7 +14,7 @@ function addTransaction(transaction) {
   }
   this.currentBalance = balance;
   this.transactions.push(copyOfTransaction);
-};
+}
 
 function create(data) {
   if (!data || !data.password || !data.email) {
@@ -23,15 +23,21 @@ function create(data) {
   this.password = encryptPassword(data.password);
   this.email = data.email;
   this.id = Math.random().toString(36).substr(2, 9);
-  this.currentBalance = 1500;
-};
+  this.addTransaction({
+    destinationAccount: '1234556',
+    amount: 700,
+  });
+  this.addTransaction({
+    destinationAccount: '1234556',
+    amount: 800,
+  });
+}
 
 const user = {
   name: '',
   id: null,
   email: '',
   transactions: [],
-  lock: null,
   currentBalance: 0,
   account: '3590021978554',
   addTransaction,

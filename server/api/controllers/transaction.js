@@ -18,6 +18,7 @@ function postTransaction(req, res) {
     const amount = parseFloat(rawAmount);
     userModel.addTransaction({
       amount,
+      destinationAccount,
     });
   } catch (e) {
     res.status(500).json({
