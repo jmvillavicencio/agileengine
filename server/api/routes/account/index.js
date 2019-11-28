@@ -4,7 +4,7 @@ const accountCtrl = require('../../controllers/account');
 
 const router = express.Router();
 
-router.get('/authenticate', accountCtrl.authenticate);
+router.post('/authenticate', accountCtrl.authenticate);
 router.get('/balance', accountCtrl.getBalance);
 router.use('/transaction', transactionRoutes);
 router.get('/by/userId/:userId', accountCtrl.getByUserId);

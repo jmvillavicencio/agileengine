@@ -2,13 +2,14 @@ const userModel = require('../models/user');
 
 function postTransaction(req, res) {
   const { amount: rawAmount, userId, destinationAccount } = req.body;
-  if (userModel.id !== userId) {
+  const user = userModel.get();
+  if (user.id !== userId) {
     res.status(500).json({
       error: 'BAD_AUTHENTICATION',
     });
     return;
   }
-  if (!destinationAccount || destinationAccount === userModel.account || !rawAmount) {
+  if (!destinationAccount || destinationAccount === user.account || !rawAmount) {
     res.status(500).json({
       error: 'BAD_TRANSACTION',
     });
@@ -16,7 +17,7 @@ function postTransaction(req, res) {
   }
   try {
     const amount = parseFloat(rawAmount);
-    userModel.addTransaction({
+    user.addTransaction({
       amount,
       destinationAccount,
     });
@@ -28,7 +29,7 @@ function postTransaction(req, res) {
   }
   res.json({
     success: true,
-    balance: userModel.currentBalance,
+    balance: user.currentBalance,
   });
 }
 

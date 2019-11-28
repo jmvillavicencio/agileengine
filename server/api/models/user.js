@@ -1,5 +1,9 @@
 const { DEBIT_TRANSACTION, CREDIT_TRANSACTION } = require('../../constants');
 
+// This is to emulate a transactional queue. I'm not implementing the process that get elements from queue.
+const transactionsQueue = [];
+
+// I create only one user because test task is based on transactions management
 const user = {
   name: '',
   id: null,
@@ -7,6 +11,8 @@ const user = {
   transactions: [],
   currentBalance: 0,
   account: '3590021978554',
+  transactionLock: null,
+  releaseLock,
   addTransaction,
   create,
 };
@@ -15,12 +21,23 @@ function encryptPassword() {
   return 'SOME_ENCTRYPTED_PSW';
 }
 
+function releaseLock() {
+  this.transactionLock = null;
+}
+
 function addTransaction(transaction, type = DEBIT_TRANSACTION) {
   if (!transaction || !transaction.amount || !transaction.destinationAccount) {
     throw new Error('INVALID_TRANSACTION');
   }
-  const { amount, destinationAccount } = transaction;
-  const signedAmount = DEBIT_TRANSACTION ? (amount * -1) : amount;
+  if (this.transactionLock) {
+    transactionsQueue.push({
+      transaction, type,
+    });
+    return;
+  }
+  this.transactionLock = new Date();
+  const { amount } = transaction;
+  const signedAmount = type === DEBIT_TRANSACTION ? (amount * -1) : amount;
   const copyOfTransaction = {
     ...transaction,
     amount: signedAmount,
@@ -28,13 +45,17 @@ function addTransaction(transaction, type = DEBIT_TRANSACTION) {
   };
   const balance = this.currentBalance + copyOfTransaction.amount;
   if (balance < 0) {
+    this.releaseLock();
     throw new Error('INVALID_TRANSACTION_NO_FUNDS');
   }
   this.currentBalance = balance;
   this.transactions.push(copyOfTransaction);
+  this.releaseLock();
 }
 
+
 function create(data) {
+
   if (!data) {
     throw new Error('INVALID_USER');
   }
@@ -42,23 +63,24 @@ function create(data) {
   if (!password || !email || password.length > 10 || !/.+@.+\..+/.test(email)) {
     throw new Error('INVALID_USER');
   }
-  this.password = encryptPassword(password);
-  this.email = email;
-  this.id = Math.random().toString(36).substr(2, 9);
-  this.addTransaction({
+  user.password = encryptPassword(password);
+  user.email = email;
+  user.id = Math.random().toString(36).substr(2, 9);
+
+  // I add some transactions here to demostrate functionality and add some credit to user
+  user.addTransaction({
     destinationAccount: '1234556',
     amount: 700,
   }, CREDIT_TRANSACTION);
-  this.addTransaction({
+  user.addTransaction({
     destinationAccount: '1234556',
     amount: 800,
   }, CREDIT_TRANSACTION);
 }
 
-
-
 module.exports = {
-  get: function () {
+  get: () => {
     return user;
   },
+  create,
 };
