@@ -4,7 +4,7 @@ const API = process.env.VUE_APP_API_URL;
 
 async function authenticate(credentials) {
   const { data } = await axios({
-    url: `${API}/auth`,
+    url: `${API}/account/authenticate`,
     method: 'POST',
     data: credentials,
   });
