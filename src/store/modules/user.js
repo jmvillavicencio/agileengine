@@ -29,9 +29,10 @@ const actions = {
   },
   async sendTransaction({ commit, getters }, payload) {
     const { balance } = await Api.user.sendTransaction(getters.userId, payload);
+    const absoluteAmount = Math.abs(payload.amount);
     commit('addTransaction', {
       ...payload,
-      amount: payload.type === DEBIT_TRANSACTION ? (payload.amount * -1) : payload.amount,
+      amount: payload.type === DEBIT_TRANSACTION ? (absoluteAmount * -1) : absoluteAmount,
     });
     commit('setBalance', balance);
   },

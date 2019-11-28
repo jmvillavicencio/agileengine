@@ -93,6 +93,7 @@
           <v-text-field
             v-model="destinationAccount"
             :label="__('Destination Account')"
+            :rules="destinationAccountRules"
             name="destinationAccount"
             outlined
           ></v-text-field>
@@ -120,9 +121,12 @@ export default {
     return {
       amount: null,
       amountRules: [
-        (v) => (!!v || NaN(v) || v < 0) && 'Bad amount',
+        (v) => (!v || Number.isNaN(v) || v < 0) && 'Bad amount',
       ],
       destinationAccount: null,
+      destinationAccountRules: [
+        (v) => (!v) && 'Bad destination account',
+      ],
       loading: false,
       success: false,
       error: false,
