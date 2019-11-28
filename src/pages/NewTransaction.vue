@@ -62,7 +62,7 @@
     </v-navigation-drawer>
     <v-row class="justify-center">
       <custom-card width="400">
-        <v-form @submit.prevent="submitTranscation">
+        <v-form @submit.prevent="submitTranscation" ref="form">
           <h3 class="mb-6">
             {{ __('New Transaction') }}
           </h3>
@@ -85,6 +85,7 @@
           <v-text-field
             v-model="amount"
             :label="__('Amount')"
+            :rules="amountRules"
             name="amount"
             outlined
             type="number"
@@ -112,11 +113,15 @@
 <script>
 import moment from 'moment';
 import { mapActions, mapGetters } from 'vuex';
+import { DEBIT_TRANSACTION } from '../constants';
 
 export default {
   data() {
     return {
       amount: null,
+      amountRules: [
+        (v) => (!!v || NaN(v) || v < 0) && 'Bad amount',
+      ],
       destinationAccount: null,
       loading: false,
       success: false,
@@ -151,16 +156,19 @@ export default {
       this.error = false;
       this.success = false;
       this.loading = true;
-      try {
-        await this.sendTransaction({
-          amount: this.amount,
-          destinationAccount: this.destinationAccount,
-        });
-        this.amount = null;
-        this.destinationAccount = null;
-        this.success = true;
-      } catch (e) {
-        this.error = this.handleAPIError(e.response.data.error);
+      if (this.$refs.form.validate()) {
+        try {
+          await this.sendTransaction({
+            amount: this.amount,
+            destinationAccount: this.destinationAccount,
+            type: DEBIT_TRANSACTION,
+          });
+          this.amount = null;
+          this.destinationAccount = null;
+          this.success = true;
+        } catch (e) {
+          this.error = this.handleAPIError(e.response.data.error);
+        }
       }
       this.loading = false;
     },

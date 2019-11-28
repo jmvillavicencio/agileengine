@@ -27,6 +27,7 @@ async function sendTransaction(userId, transaction) {
       userId,
       amount: transaction.amount,
       destinationAccount: transaction.destinationAccount,
+      type: transaction.type,
     },
   });
   return data;

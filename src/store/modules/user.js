@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
+import { DEBIT_TRANSACTION } from '../../constants';
 import Api from '../../api';
 
 Vue.use(Vuex);
@@ -29,7 +29,10 @@ const actions = {
   },
   async sendTransaction({ commit, getters }, payload) {
     const { balance } = await Api.user.sendTransaction(getters.userId, payload);
-    commit('addTransaction', payload);
+    commit('addTransaction', {
+      ...payload,
+      amount: payload.type === DEBIT_TRANSACTION ? (payload.amount * -1) : payload.amount,
+    });
     commit('setBalance', balance);
   },
 };
