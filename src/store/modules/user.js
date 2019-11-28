@@ -52,7 +52,7 @@ const mutations = {
   addTransaction(state, payload) {
     Vue.set(state, 'user', {
       ...state.user,
-      transactions: [...state.user.transactions, payload],
+      transactions: [payload, ...state.user.transactions],
     });
   },
 };
