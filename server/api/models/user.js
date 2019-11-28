@@ -26,7 +26,7 @@ function releaseLock() {
 }
 
 function addTransaction(transaction, type = DEBIT_TRANSACTION) {
-  if (!transaction || !transaction.amount || !transaction.destinationAccount) {
+  if (!transaction || !transaction.amount || !transaction.destinationAccount || Number.isNaN(transaction.amount)) {
     throw new Error('INVALID_TRANSACTION');
   }
   if (this.transactionLock) {
@@ -37,7 +37,8 @@ function addTransaction(transaction, type = DEBIT_TRANSACTION) {
   }
   this.transactionLock = new Date();
   const { amount } = transaction;
-  const signedAmount = type === DEBIT_TRANSACTION ? (amount * -1) : amount;
+  const absoluteAmount = Math.abs(amount);
+  const signedAmount = type === DEBIT_TRANSACTION ? (absoluteAmount * -1) : absoluteAmount;
   const copyOfTransaction = {
     ...transaction,
     amount: signedAmount,
