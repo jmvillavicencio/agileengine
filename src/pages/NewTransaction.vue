@@ -153,7 +153,7 @@ export default {
       this.loading = true;
       try {
         await this.sendTransaction({
-          amount: this.amount * -1,
+          amount: this.amount,
           destinationAccount: this.destinationAccount,
         });
         this.amount = null;
