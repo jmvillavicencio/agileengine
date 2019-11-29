@@ -16,12 +16,15 @@
       </v-list-item>
       <v-divider />
       <v-list v-if="!selectedTransaction">
-        <v-list-item class="text-center" v-if="!userTransactions || !userTransactions.length">
+        <v-list-item
+          v-if="!userTransactions || !userTransactions.length"
+          class="text-center"
+        >
           <v-list-item-content>
             <v-list-item-title><em>No transactions yet</em></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <template v-for="(item, index) in sortedUserTransactions" >
+        <template v-for="(item, index) in sortedUserTransactions">
           <v-list-item
             :key="item.title"
             link
@@ -32,7 +35,9 @@
             </v-list-item-content>
             <v-list-item-action @click.stop.prevent="selectTransaction(item)">
               <v-btn icon>
-                <v-icon color="grey lighten-1">mdi-information</v-icon>
+                <v-icon color="grey lighten-1">
+                  mdi-information
+                </v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
@@ -54,15 +59,27 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <template v-slot:append v-if="selectedTransaction">
+      <template
+        v-if="selectedTransaction"
+        v-slot:append
+      >
         <div class="pa-2">
-          <v-btn block color="primary" @click="selectedTransaction = null">Go Back</v-btn>
+          <v-btn
+            block
+            color="primary"
+            @click="selectedTransaction = null"
+          >
+            Go Back
+          </v-btn>
         </div>
       </template>
     </v-navigation-drawer>
     <v-row class="justify-center">
       <custom-card width="400">
-        <v-form @submit.prevent="submitTranscation" ref="form">
+        <v-form
+          ref="form"
+          @submit.prevent="submitTranscation"
+        >
           <h3 class="mb-6">
             {{ __('New Transaction') }}
           </h3>
@@ -80,15 +97,16 @@
             text
             type="error"
           >
-            {{ this.error || 'Oops! Something went wrong. Please, try again later' }}.
+            {{ error || 'Oops! Something went wrong. Please, try again later' }}.
           </v-alert>
           <v-text-field
             v-model="amount"
             :label="__('Amount')"
             :rules="amountRules"
             name="amount"
-            outlined
             type="number"
+            outlined
+            autofocus
           ></v-text-field>
           <v-text-field
             v-model="destinationAccount"
@@ -169,12 +187,18 @@ export default {
           });
           this.amount = null;
           this.destinationAccount = null;
-          this.success = true;
+          this.setSuccess();
         } catch (e) {
           this.error = this.handleAPIError(e.response.data.error);
         }
       }
       this.loading = false;
+    },
+    setSuccess() {
+      this.success = true;
+      setTimeout(() => {
+        this.success = false;
+      }, 4000);
     },
   },
 };
