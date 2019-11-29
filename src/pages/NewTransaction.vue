@@ -185,8 +185,7 @@ export default {
             destinationAccount: this.destinationAccount,
             type: DEBIT_TRANSACTION,
           });
-          this.amount = null;
-          this.destinationAccount = null;
+          this.$refs.form.reset();
           this.setSuccess();
         } catch (e) {
           this.error = this.handleAPIError(e.response.data.error);
